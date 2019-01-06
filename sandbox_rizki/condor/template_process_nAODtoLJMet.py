@@ -14,12 +14,12 @@ sys.path.append(workDir)
 
 # from TestCalc import *
 # from Plotter import *
-from ljmet_modules.EventSelector import *
+from ljmet_modules.EventSelector_1Lep import *
 from ljmet_modules.CommonCalc import *
 from ljmet_modules.singleLepCalc import *
 
 
-modules_to_run =[EventSelector(),CommonCalc(),singleLepCalc()]
+modules_to_run =[EventSelector_1Lep(),CommonCalc(),singleLepCalc()]
 histFileName_	= None
 histDirName_ 	= None
 
@@ -28,8 +28,8 @@ histDirName_ 	= None
 presel_el	= "( Electron_pt[0] > 30 )"
 presel_mu	= "( Muon_pt[0] > 30 )"
 presel_jet	= "( Jet_pt[0] > 30 )"
-preselection	= presel_el + " && " + presel_mu + " && " + presel_jet
-
+preselection	= " ( " +presel_el + " || " + presel_mu + " ) && " + presel_jet
+print '\nPreselection cuts:',preselection,'\n'
 
 def put_together_trig_ROOT_string(trigger_paths):
 	triggers = '( '
@@ -38,7 +38,7 @@ def put_together_trig_ROOT_string(trigger_paths):
 		if trig!=trigger_paths[-1]:  
 			triggers = triggers + ' || '
 	triggers = triggers + ' )'
-	print '\nTRIGGERS=',triggers,'\n'	
+	print '\nTRIGGERS =',triggers,'\n'	
 	return triggers	
 
 trigger_paths =[
@@ -107,7 +107,7 @@ p.run()
 
 ### measure time elapsed
 total_time_seconds = time.time() - start_time
-hours =  math.floor(total_time_seconds/3600.)
+hours =  int(math.floor(total_time_seconds/3600.))
 minutes = int( (total_time_seconds - hours*3600) / 60 )
 seconds = int(total_time_seconds - hours*3600 - minutes*60) 
-print("--- PostProcessor took %s mins %s seconds ---" % (minutes,seconds))
+print("--- PostProcessor took about %s hours %s mins %s seconds ---" % (hours,minutes,seconds))

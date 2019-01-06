@@ -54,9 +54,11 @@ echo "ls:"
 ls
 
 sed -i "s|CONDOR_RELBASE|$PWD/$INPUTTAR|" ${PREFIX}_${JOBID}.py
-echo "python ${PREFIX}_${JOBID}.py"
+echo "running: python ${PREFIX}_${JOBID}.py"
 python ${PREFIX}_${JOBID}.py
 
+#saving job report output from nanoAOD tools
+mv -v FrameworkJobReport.xml ${PREFIX}_${JOBID}_FrameworkJobReport.xml
 
 # copy output to eos
 echo "xrdcp .root output for condor"

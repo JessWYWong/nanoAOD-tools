@@ -86,4 +86,4 @@ total_time_seconds = time.time() - start_time
 hours =  math.floor(total_time_seconds/3600.)
 minutes = int( (total_time_seconds - hours*3600) / 60 )
 seconds = int(total_time_seconds - hours*3600 - minutes*60) 
-print("--- PostProcessor took %s mins %s seconds ---" % (minutes,seconds))
+print("--- PostProcessor took %s hours %s mins %s seconds ---" % (hours,minutes,seconds))

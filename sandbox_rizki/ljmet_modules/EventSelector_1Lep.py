@@ -5,10 +5,10 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collect
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 
 
-class EventSelector(Module):
+class EventSelector_1Lep(Module):
 
     def __init__(self):
-        print 'Running EventSelector module'
+        print 'Running EventSelector_1Lep module'
         		
 
     def analyze(self, event):
@@ -23,8 +23,8 @@ class EventSelector(Module):
         #select based on PV? eg. PV_npvsGood > 0 
         if not ( event.PV_npvsGood > 0 ): return False
 
-        #select events with at least 2 leptons
-        if not ( len(muons)+len(electrons) >=2 ): return False
+        #select events with at least 1 lepton. Probably can expand to require 1 tight leptons here. 
+        if not ( len(muons)+len(electrons) >=1 ): return False
 
         return True
 
