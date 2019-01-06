@@ -12,7 +12,7 @@ create / select modules from ljmet_modules in parent directory
 
 after all configured, run:
 
-	python submit_nAODtoLJMet.py
+	source submit_nAODtoLJMet.sh
 
 
 
