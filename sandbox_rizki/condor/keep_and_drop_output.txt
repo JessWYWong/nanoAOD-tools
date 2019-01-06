@@ -1,0 +1,14 @@
+# this is a comment
+drop *
+#keep nMuon
+#keep Muon*
+#keep nElectron
+#keep Electron*
+#keep Jet*
+#keep FatJet*
+#keep SubJet*
+#keep MET*
+#keep PV*
+#keep run
+#keep luminosityBlock
+#keep event

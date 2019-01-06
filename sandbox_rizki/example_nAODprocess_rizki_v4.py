@@ -58,7 +58,7 @@ if (isMC):
 	jsonFile = None
 else: 
 	print 'isMC',isMC
-	jsonFile = "Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt"
+	jsonFile = "data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt"
 	print 'Using jsonFile:',jsonFile
 
 haddFileName_	= outputDir_+'_hadd.root'
