@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -iv /uscms_data/d3/rsyarif/Brown2018/NanoAOD_LJMet/CMSSW_9_4_11.tar
+#rm -iv /uscms_data/d3/rsyarif/Brown2018/NanoAOD_LJMet/CMSSW_9_4_11.tar
 
 echo "SUBMITTING nAODtoLJMET -- RR 2017Data"
 
