@@ -120,11 +120,12 @@ def get_input(num, list):
 j = 1
 nfiles = 1
 
-tempdir = '/uscms_data/d3/rsyarif/Brown2018/NanoAOD_LJMet/'+outputdir.split('/')[-1]+'_logs/'+shift+'/'+prefix
+# SET CONDOR JOBS FILE AND REPORT OUTPUTDIR HERE
+tempdir = '/uscms_data/d3/rsyarif/Brown2018/NanoAOD_LJMet/'
+
+tempdir = tempdir+outputdir.split('/')[-1]+'_logs/'+shift+'/'+prefix
 os.makedirs(tempdir)
-
 py_file = open(tempdir+"/"+prefix+"_"+str(j)+".py","w")
-
 print 'CONDOR work dir: '+tempdir
 
 count = 0
@@ -132,21 +133,19 @@ file_list = open(files)
 for line in file_list:
     if line.find('.root')>0:
         count = count + 1
-
 file_list.close()
 
+# Setting bash script
 os.system('sed -e \'s/SETUP/'+setupString+'/g\' template.sh > '+tempdir+'/'+prefix+'.sh')
 
 while ( nfiles <= count ):
 
-    # ADD YOUR CONFIG FILE HERE!!
-    py_templ_file = open(relBase+'/src/PhysicsTools/NanoAODTools/sandbox_rizki/condor/template_process_nAODtoLJMet.py')
-
-    py_file = open(tempdir+'/'+prefix+'_'+str(j)+'.py','w')
-
     #Avoid calling the get_input function once per line in template
     singleFileList = get_input(nfiles, files)
 
+    # Configuring nAOD-tools py file per job
+    py_templ_file = open(relBase+'/src/PhysicsTools/NanoAODTools/sandbox_rizki/condor/template_process_nAODtoLJMet.py')
+    py_file = open(tempdir+'/'+prefix+'_'+str(j)+'.py','w')
     for line in py_templ_file:
         line=line.replace('ISMC',     useMC)
         line=line.replace('JSON',     json)
@@ -154,10 +153,11 @@ while ( nfiles <= count ):
         line=line.replace('OUTPUTDIR',  prefix+'_'+str(j))
         py_file.write(line)
     py_file.close()
+    py_templ_file.close()
 
+	# Configuring CONDOR jdl file per job
     jdl_templ_file = open(relBase+'/src/PhysicsTools/NanoAODTools/sandbox_rizki/condor/template.jdl')
     jdl_file       = open(tempdir+'/'+prefix+'_'+str(j)+'.jdl','w')
-
     for line in jdl_templ_file:
         line=line.replace('PREFIX',     prefix)
         line=line.replace('JOBID',      str(j))
@@ -166,12 +166,10 @@ while ( nfiles <= count ):
         line=line.replace('TAR_FILE',   tarfile.split('/')[-1])
         line=line.replace('TAR_DIR',    tardir)
         jdl_file.write(line)
-
     jdl_file.close()
 
     j = j + 1
     nfiles = nfiles + files_per_job
-    py_templ_file.close()
 
 njobs = j - 1
 
