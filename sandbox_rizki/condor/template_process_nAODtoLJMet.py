@@ -12,17 +12,17 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 workDir=os.environ['CMSSW_BASE']+'/src/PhysicsTools/NanoAODTools/sandbox_rizki/'
 sys.path.append(workDir)
 
+### Import & choose relevant modules:
 # from TestCalc import *
 # from Plotter import *
 from ljmet_modules.EventSelector_1Lep import *
 from ljmet_modules.CommonCalc import *
 from ljmet_modules.singleLepCalc import *
-
-
 modules_to_run =[EventSelector_1Lep(),CommonCalc(),singleLepCalc()]
+
+#these need to be defined only if running Plotter()
 histFileName_	= None
 histDirName_ 	= None
-
 
 #define preselection
 presel_el	= "( Electron_pt[0] > 30 )"
@@ -41,6 +41,7 @@ def put_together_trig_ROOT_string(trigger_paths):
 	print '\nTRIGGERS =',triggers,'\n'	
 	return triggers	
 
+#define relevant triggers
 trigger_paths =[
 
 	'HLT_Ele35_WPTight_Gsf',
@@ -67,7 +68,6 @@ trigger_paths =[
 	'HLT_Mu15_IsoVVVL_PFHT600',
 
 	]
-
 triggers = put_together_trig_ROOT_string(trigger_paths)
 
 outputDir_	= 'OUTPUTDIR'

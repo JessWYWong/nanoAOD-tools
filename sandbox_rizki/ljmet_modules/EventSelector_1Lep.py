@@ -23,7 +23,7 @@ class EventSelector_1Lep(Module):
         #select based on PV? eg. PV_npvsGood > 0 
         if not ( event.PV_npvsGood > 0 ): return False
 
-        #select events with at least 1 lepton. Probably can expand to require 1 tight leptons here. 
+        #select events with at least 1 lepton. Probably can expand to require 1 tight leptons here, also jet requirements 
         if not ( len(muons)+len(electrons) >=1 ): return False
 
         return True

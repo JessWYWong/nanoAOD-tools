@@ -39,7 +39,7 @@ else:
 
 cTime=datetime.datetime.now()
 date='%i_%i_%i'%(cTime.year,cTime.month,cTime.day)
-outdir = 'Testing_nAODtoLJMet_2017datasets_'+date+'_rizki'
+outdir = 'Testing_nAODtoLJMet_2017datasets_'+date+'_rizki' #EDIT ME ACCORDINGLY
 
 for sample in sampleList:
 	accessor = 'cmsxrootd.fnal.gov'

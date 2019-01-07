@@ -4,9 +4,6 @@ shift = sys.argv[1]
 
 sampleList=[
 
-# 	'TESTFILE.txt'
-# 	'TESTFILE_2.txt'
-
 	###SIGNAL:
 # 	'TTTT_TuneCP5_13TeV-amcatnlo-pythia8.txt', 
 	'TTTT_TuneCP5_13TeV-amcatnlo-pythia8_TEST.txt', 
@@ -47,7 +44,7 @@ else:
 
 cTime=datetime.datetime.now()
 date='%i_%i_%i'%(cTime.year,cTime.month,cTime.day)
-outdir = 'Testing_nAODtoLJMet_2017datasets_'+date+'_rizki'
+outdir = 'Testing_nAODtoLJMet_2017datasets_'+date+'_rizki' #EDIT ME ACCORDINGLY
 
 for sample in sampleList:
 	accessor = 'cmsxrootd.fnal.gov'
