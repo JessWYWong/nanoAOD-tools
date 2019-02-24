@@ -1,5 +1,7 @@
 # this is a comment
 drop *
+#keep *singleLepCalc
+#keep *JetSubCalc
 #keep nMuon
 #keep Muon*
 #keep nElectron

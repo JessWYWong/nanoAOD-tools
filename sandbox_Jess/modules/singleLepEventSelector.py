@@ -9,8 +9,12 @@ from modules.LepJetCleaning import *
 
 class singleLepEventSelector(Module):
   def __init__(self, muSelCond, elSelCond, jetSelCond, jetP4SelCond, fatJetSelCond, fatJetP4SelCond, lepjetDR):
-    print 'Running singleLepEventSelector module'
-    self.nLep = 1
+    # print 'Running singleLepEventSelector module'
+    self.Jet_nMax = 999
+    self.Jet_nMin = 2
+    self.Jet_leadingPt = 20
+    self.Lep_nMax = 1
+    self.Lep_nMin = 1
     self.muSelection = muSelCond
     self.elSelection = elSelCond
     self.jetSelection = jetSelCond
@@ -30,6 +34,14 @@ class singleLepEventSelector(Module):
     
 
   def analyze(self, event):
+    """process event, return True (go to next module) or False (fail, go to next event)"""
+    electrons = list(Collection(event, "Electron"))
+    muons = list(Collection(event, "Muon"))
+    jets = Collection(event, "Jet")
+    jetAK8s = Collection(event, "FatJet")
+    subjets = Collection(event, "SubJet")
+
+    #Selection
     Selmu = []
     Selel = []
     JetsP4 = []
@@ -38,15 +50,12 @@ class singleLepEventSelector(Module):
     JetAK8sP4 = []
     SeljetAK8 = []
     SeljetAK8P4 = []
+    Selsubjet = []
+    theJetAK8SDSubjetIndex = []
+    theJetAK8SDSubjetSize = []
     leadingJetpt = 0
     leadingJetAK8pt = 0
-    #Selection
-    """process event, return True (go to next module) or False (fail, go to next event)"""
-    electrons = list(Collection(event, "Electron"))
-    muons = list(Collection(event, "Muon"))
-    jets = Collection(event, "Jet")
-    jetAK8s = Collection(event, "FatJet")
-
+    
     #select tight muons
     for mu in muons :
       passed_selection = True
@@ -77,20 +86,26 @@ class singleLepEventSelector(Module):
       if passed_selection:
         Selel.append(el)
 
-    #select events with only 1 lepton
+    nLep = len(Selel)+len(Selmu)
+
+    #select events with only desired number of leptons
+    if nLep<self.Lep_nMin or nLep>self.Lep_nMax:
+      return False
+
     isElectron=0
     isMuon=0
-    if len(Selel) == 1 and len(Selmu)== 0:
-      isElecton=1
-    elif len(Selmu) == 1 and len(Selel) == 0:
-      isMuon=1
-    else:
-      return False
+    if nLep == 1:
+      if len(Selel) == 1 and len(Selmu)== 0:
+        isElecton=1
+      elif len(Selmu) == 1 and len(Selel) == 0:
+        isMuon=1
+      else:
+        return False
    
-    if(self.isSM and isElectron == 1):
-     return False
-    if(self.isSE and isMuon == 1):
-     return False
+      if(self.isSM and isElectron == 1):
+        return False
+      if(self.isSE and isMuon == 1):
+        return False
 
     #lep-jet cleaning
     Cleaned = False
@@ -132,8 +147,8 @@ class singleLepEventSelector(Module):
         if jetP4.Pt() > leadingJetpt:
           leadingJetpt=jetP4.Pt()
 
-    #select events with at least 2 jets and leading jet Pt >20
-    if not (len(Seljet)>=2 and leadingJetpt>20):
+    #select events with desired number of jets and leading jet Pt > cut value
+    if not (len(Seljet)>=self.Jet_nMin and len(Seljet)<=self.Jet_nMax and leadingJetpt>self.Jet_leadingPt):
       return False
 
     for i,jetak8 in enumerate(jetAK8s):
@@ -167,6 +182,17 @@ class singleLepEventSelector(Module):
         if jetak8P4.Pt() > leadingJetAK8pt:
           leadingJetAK8pt=jetak8P4.Pt()
 
+        theJetAK8SDSubjetIndex.append(len(Selsubjet))
+        count = 0
+        if jetak8.subJetIdx1 >=0 and jetak8.subJetIdx1 < event.nSubJet:
+          Selsubjet.append(subjets.__getitem__(jetak8.subJetIdx1))
+          count += 1
+        if jetak8.subJetIdx2 >=0 and jetak8.subJetIdx2 < event.nSubJet:
+          Selsubjet.append(subjets.__getitem__(jetak8.subJetIdx2))
+          count +=1
+        theJetAK8SDSubjetSize.append(count)
+
+
     
     event.isElectron = isElectron
     event.isMuon = isMuon
@@ -177,12 +203,13 @@ class singleLepEventSelector(Module):
     event.Seljet = Seljet
     event.nSeljet = len(Seljet)
     event.SeljetP4 = SeljetP4
-    event.nSeljetP4 = len(SeljetP4)
     event.SeljetAK8 = SeljetAK8
     event.nSeljetAK8 = len(SeljetAK8)
     event.SeljetAK8P4 = SeljetAK8P4
-    event.nSeljetAK8P4 = len(SeljetAK8P4)
-
+    event.Selsubjet = Selsubjet
+    event.nSelsubjet = len(Selsubjet)
+    event.theJetAK8SDSubjetIndex = theJetAK8SDSubjetIndex
+    event.theJetAK8SDSubjetSize = theJetAK8SDSubjetSize
 
     return True
 

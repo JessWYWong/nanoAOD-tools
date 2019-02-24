@@ -8,10 +8,11 @@ import math
 
 
 class singleLepCalc(Module):
-  def __init__(self, isMC, trig, cleangenjets, keepPDGID, keepMomPDGID, keepPDGIDForce, keepStatusForce):
+  def __init__(self, isMC, MCtrig, DATAtrig, cleangenjets, keepPDGID, keepMomPDGID, keepPDGIDForce, keepStatusForce):
     # print 'Running singleLepCalc module'
     self.isMC = isMC
-    self.triggers = trig
+    self.MCtriggers = MCtrig
+    self.DATAtriggers = DATAtrig
     self.CleanGenJets = cleangenjets
     self.keepPDGID = keepPDGID
     self.keepMomPDGID = keepMomPDGID
@@ -32,13 +33,13 @@ class singleLepCalc(Module):
     self.out.branch("isTau_singleLepCalc", "B")
 
     # self.out.branch("vsSelMCTriggersMu_singleLepCalc", "B")
-    # self.out.branch("viSelMCTriggersMu_singleLepCalc", "I")
+    self.out.branch("viSelMCTriggersMu_singleLepCalc", "I", lenVar="nMCtriggers")
     # self.out.branch("vsSelMCTriggersEl_singleLepCalc", "B")
-    # self.out.branch("viSelMCTriggersEl_singleLepCalc", "I")
+    self.out.branch("viSelMCTriggersEl_singleLepCalc", "I", lenVar="nMCtriggers")
     # self.out.branch("vsSelTriggersMu_singleLepCalc", "B")
-    # self.out.branch("viSelTriggersMu_singleLepCalc", "I")
+    self.out.branch("viSelTriggersMu_singleLepCalc", "I", lenVar="nMCtriggers")
     # self.out.branch("vsSelTriggersEl_singleLepCalc", "B")
-    # self.out.branch("viSelTriggersEl_singleLepCalc", "I")
+    self.out.branch("viSelTriggersEl_singleLepCalc", "I", lenVar="nMCtriggers")
 
     self.out.branch("muPt_singleLepCalc", "F", lenVar="nSelmu")
     self.out.branch("muEta_singleLepCalc", "F", lenVar="nSelmu")
@@ -82,6 +83,20 @@ class singleLepCalc(Module):
     self.out.branch("genJetPhi_singleLepCalc", "F", lenVar="nGenJet")
     self.out.branch("genJetEnergy_singleLepCalc", "F", lenVar="nGenJet")
 
+    # Empty branches 
+    self.out.branch("elIsTightBarrel_singleLepCalc", "I")
+    self.out.branch("elIsMediumBarrel_singleLepCalc", "I")
+    self.out.branch("elIsLooseBarrel_singleLepCalc", "I")
+    self.out.branch("elIsVetoBarrel_singleLepCalc", "I")
+    self.out.branch("elIsTIghtEndCap_singleLepCalc", "I")
+    self.out.branch("elIsMediumEndCap_singleLepCalc", "I")
+    self.out.branch("elIsLooseEndCap_singleLepCalc", "I")
+    self.out.branch("elIsVetoEndCap_singleLepCalc", "I")
+    self.out.branch("muIsTight_singleLepCalc", "I")
+    self.out.branch("muIsMedium_singleLepCalc", "I")
+    self.out.branch("muIsMediumPrompt_singleLepCalc", "I")
+    self.out.branch("muIsLoose_singleLepCalc", "I")
+
 
   def beginJob(self,histFile=None,histDirName=None):    
     Module.beginJob(self,histFile,histDirName)
@@ -115,38 +130,39 @@ class singleLepCalc(Module):
     self.out.fillBranch("isTau_singleLepCalc", isTau)
 
     # vsSelMCTriggersEl = []
-    # viSelMCTriggersEl = []
+    viSelMCTriggersEl = []
     # vsSelTriggersEl = []
-    # viSelTriggersEl = []
+    viSelTriggersEl = []
     # vsSelMCTriggersMu = []
-    # viSelMCTriggersMu = []
+    viSelMCTriggersMu = []
     # vsSelTriggersMu = []
-    # viSelTriggersMu = []
-    # for trig in self.triggers:
-    #   if self.isMC:      
-    #     if "Mu" in trig or "mu" in trig:
-    #       vsSelMCTriggersMu.append(trig)
-    #       viSelMCTriggersMu.append(eval("event."+trig))
-    #     elif "Ele" in trig or "ele" in trig:
-    #       vsSelMCTriggersEl.append(trig)
-    #       viSelMCTriggersEl.append(eval("event."+trig))
-    #   else:
-    #     if "Mu" in trig or "mu" in trig:
-    #       vsSelTriggersMu.append(trig)
-    #       viSelTriggersMu.append(eval("event."+trig))
-    #     elif "Ele" in trig or "ele" in trig:
-    #       vsSelTriggersEl.append(trig)
-    #       viSelTriggersEl.append(eval("event."+trig))
+    viSelTriggersMu = []
+    if self.isMC:
+      for trig in self.MCtriggers:
+        if "Mu" in trig or "mu" in trig:
+          # vsSelMCTriggersMu.append(trig)
+          viSelMCTriggersMu.append(eval("event."+trig))
+        elif "Ele" in trig or "ele" in trig:
+          # vsSelMCTriggersEl.append(trig)
+          viSelMCTriggersEl.append(eval("event."+trig))
+    else:
+      for trig in self.DATAtriggers:
+        if "Mu" in trig or "mu" in trig:
+          # vsSelTriggersMu.append(trig)
+          viSelTriggersMu.append(eval("event."+trig))
+        elif "Ele" in trig or "ele" in trig:
+          # vsSelTriggersEl.append(trig)
+          viSelTriggersEl.append(eval("event."+trig))
 
-    # #fill branches
+    #fill branches
     # self.out.fillBranch("vsSelMCTriggersMu_singleLepCalc",vsSelMCTriggersMu)
-    # self.out.fillBranch("viSelMCTriggersMu_singleLepCalc",viSelMCTriggersMu)
+    self.out.fillBranch("viSelMCTriggersMu_singleLepCalc",viSelMCTriggersMu)
     # self.out.fillBranch("vsSelMCTriggersEl_singleLepCalc",vsSelMCTriggersEl)
-    # self.out.fillBranch("viSelMCTriggersEl_singleLepCalc",viSelMCTriggersEl)
+    self.out.fillBranch("viSelMCTriggersEl_singleLepCalc",viSelMCTriggersEl)
     # self.out.fillBranch("vsSelTriggersMu_singleLepCalc",vsSelTriggersMu)
-    # self.out.fillBranch("viSelTriggersMu_singleLepCalc",viSelTriggersMu)
+    self.out.fillBranch("viSelTriggersMu_singleLepCalc",viSelTriggersMu)
     # self.out.fillBranch("vsSelTriggersEl_singleLepCalc",vsSelTriggersEl)
-    # self.out.fillBranch("viSelTriggersEl_singleLepCalc",viSelTriggersEl)
+    self.out.fillBranch("viSelTriggersEl_singleLepCalc",viSelTriggersEl)
 
     mu_Pt = []
     mu_Eta = []

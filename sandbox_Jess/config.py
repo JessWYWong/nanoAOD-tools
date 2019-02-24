@@ -2,6 +2,7 @@
 import math
 
 files=["root://cmsxrootd.fnal.gov//store/mc/RunIIFall17NanoAOD/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/NANOAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/C6AABB0E-33AC-E811-8B63-0CC47A7C3404.root"]
+puppiCorrfilepath = "/uscms_data/d3/wywong/NanoAOD/CMSSW_9_4_11/src/PhysicsTools/NanoAODTools/PuppiSoftdropMassCorr/weights/puppiCorr.root"
 isMC=True
 
 histFileName_ = None
@@ -31,19 +32,34 @@ LepJetCleaning_DR = 0.4
 killHF=False
 jetSelCond={}
 jetSelCond["jetId"] = "> 0"
+
 jetP4SelCond={}
 jetP4SelCond["Pt"] = "> 20."
 jetP4SelCond["Eta"] = "< 2.4"
 if killHF:
-  jetP4SelCond["Eta"] = "<= 2.4"
+	jetP4SelCond["Eta"] = "<= 2.4"
 
 # # ------------------AK8Jet------------------
 fatJetSelCond = {}
 fatJetSelCond["jetId"] = "> 0"
+
 fatJetP4SelCond={}
 fatJetP4SelCond["Pt"] = ">= 170."
 if killHF:
-  fatJetP4SelCond["Eta"] = "<= 2.4"
+	fatJetP4SelCond["Eta"] = "<= 2.4"
+
+# # ------------------ b-tagging ------------------
+era = "2017"
+algo = "deepcsv"
+btagOP = "MEDIUM"
+bTagCut = {}
+bTagCut["TIGHT"] = 0.8001
+bTagCut["MEDIUM"] = 0.4941
+bTagCut["LOOSE"] = 0.1522
+
+FatJetSD_JMS_sd = 0.982
+FatJetSD_JMS_sd_up = FatJetSD_JMS_sd + 0.004
+FatJetSD_JMS_sd_dn = FatJetSD_JMS_sd - 0.004
 
 # ------------------Preselection------------------
 Preselection_list = [
@@ -62,7 +78,6 @@ keepMomPDGID = [6, 24]
 keepPDGIDForce = [6,6]
 keepStatusForce = [62,22]
 cleanGenJets = True
-
 
 # ------------------Triggers------------------
 MC_trigger_list = [
@@ -111,3 +126,11 @@ data_trigger_list = [
 	"HLT_Mu50_IsoVVVL_PFHT450",
 	"HLT_Mu15_IsoVVVL_PFHT600"
 ]
+
+
+
+
+
+
+
+
